@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">AcelerometroCompose</string>
+    <string name="title_activity_acel">AcelActivity</string>
+    <string name="title_activity_modo">ModoActivity</string>
+    <string name="title_activity_solo">SoloActivity</string>
+
+    <string name="Titulo_App">Aplicacion de sensado</string>
+    <string name="ModoDeApp">Seleccione el modo</string>
+    <string name="Selec_Pruebas">Selecciona la prueba</string>
+
+    <string-array name="Pruebas">
+        <item>Prueba de Control de tronco</item>
+        <item>Segmental Assessment of Trunk Control</item>
+        <item>Analisis de Marcha</item>
+    </string-array>
+
+
 </resources>
