@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.toSize
 import com.argent.acelerometrocompose.ui.theme.Shapes
 
 @Composable
-fun SoloSessionScreen(onBack: () -> Unit){
+fun SoloSessionScreen(onBack: () -> Unit, onConfigurar: () -> Unit){
     val numPruebas = listOf<String>("1","2","3","4","5","6","7","8","9","10")
     var mSelectedIndex by remember { mutableStateOf(0) }
     var mExpanded by remember { mutableStateOf(false) }
@@ -89,7 +89,7 @@ fun SoloSessionScreen(onBack: () -> Unit){
         }
         Spacer(modifier = Modifier.height(20.dp))
 
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = onConfigurar) {
             Text(
                 text = "Confirmar",
                 fontSize = 30.sp,

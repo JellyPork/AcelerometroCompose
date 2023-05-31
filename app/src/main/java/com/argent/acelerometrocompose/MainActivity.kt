@@ -77,6 +77,17 @@ fun NavigationView() {
         }
         composable("soloSessions"){
             SoloSessionScreen(
+                onBack = { navController.popBackStack() },
+                onConfigurar = { navController.navigate("mqtt") }
+            )
+        }
+        composable("mqtt"){
+            ConfigurarMqttScreen (
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable("acel"){
+            AcelScreen(
                 onBack = { navController.popBackStack() }
             )
         }
