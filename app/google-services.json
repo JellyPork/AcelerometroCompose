@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "105096394504",
+    "project_id": "sensor-movil-uabc",
+    "storage_bucket": "sensor-movil-uabc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:105096394504:android:835adbc3bd3cebb135debd",
+        "android_client_info": {
+          "package_name": "com.argent.acelerometrocompose"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBs2Kdk45Ak9YKqtI1oYRdMD-tGM4VRbYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
