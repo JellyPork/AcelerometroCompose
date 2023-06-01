@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -78,7 +78,8 @@ fun NavigationView() {
         composable("soloSessions"){
             SoloSessionScreen(
                 onBack = { navController.popBackStack() },
-                onConfigurar = { navController.navigate("mqtt") }
+                onSensores = { navController.navigate("acel") }
+                //onConfigurar = { navController.navigate("mqtt") }
             )
         }
         composable("mqtt"){
@@ -117,14 +118,23 @@ fun HomeScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(50.dp))
         Button(onClick = {
                 navController.navigate("modo")
-//            val intent = Intent(context, ModoActivity::class.java)
-//            context.startActivity(intent)
         }) {
-            Text(text = "Iniciar")
+            Text(text = "Iniciar",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
         Spacer(modifier = Modifier.height(5.dp))
         Button(onClick = { /*TODO*/ }) {
-            Text(text = "Ver archivos")
+            Text(text = "Archivos",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold)
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+        Button(onClick = { navController.navigate("mqtt")}) {
+            Text(text = "Ajustes",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold)
         }
     }
 }

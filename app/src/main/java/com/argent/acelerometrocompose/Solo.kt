@@ -1,5 +1,6 @@
 package com.argent.acelerometrocompose
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -65,8 +66,15 @@ fun SoloScreen(onBack: () -> Unit, onSoloSessions: () -> Unit) {
             }
         )
         Spacer(modifier = Modifier.height(15.dp))
-        Button(onClick =  onSoloSessions ) {
-            Text(text = "Ok")
+        Button(onClick = {
+            if(vals.sesion.value!="")
+                onSoloSessions()
+            else Toast.makeText(context,"Seleciona un elemento.", Toast.LENGTH_SHORT).show()
+        })
+        {
+            Text(text = "Seleccionar",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold)
         }
 
     }

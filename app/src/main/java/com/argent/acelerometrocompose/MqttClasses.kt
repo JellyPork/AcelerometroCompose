@@ -36,15 +36,11 @@ lateinit var broker: MqttAndroidClient
 @Composable
 fun ConfigurarMqttScreen(onBack: () -> Unit){
     val context = LocalContext.current
-    val top = remember {
-        mutableStateOf("")
-    }
-    var ser = remember {
-        mutableStateOf("test.mosquitto.org")
-    }
-    var puerto = remember {
-        mutableStateOf("1883")
-    }
+    var ser = remember {mutableStateOf(vals.brokerServer.value)}
+    var puerto = remember {mutableStateOf(vals.brokerPort.value)}
+    var top = remember {mutableStateOf(vals.brokerTopic.value)}
+    var cli = remember {mutableStateOf(vals.brokerClient.value)}
+    var pas = remember {mutableStateOf(vals.brokerPass.value)}
     val placeholder = ""
     Column(
         modifier = Modifier
@@ -120,13 +116,122 @@ fun ConfigurarMqttScreen(onBack: () -> Unit){
                     }
                 }
             )
+        BasicTextField(
+            value = top.value,
+            onValueChange = { newText ->
+                top.value = newText
+            },
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.DarkGray
+            ),
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 64.dp) // margin left and right
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            color = Color(0xFFAAE9E6),
+                            shape = RoundedCornerShape(size = 16.dp)
+                        )
+                        .padding(horizontal = 16.dp, vertical = 12.dp), // inner padding
+                ) {
+                    if (puerto.value.isEmpty()) {
+                        Text(
+                            text = placeholder,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.LightGray
+                        )
+                    }
+                    innerTextField()
+                }
+            }
+        )
+        BasicTextField(
+            value = cli.value,
+            onValueChange = { newText ->
+                cli.value = newText
+            },
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.DarkGray
+            ),
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 64.dp) // margin left and right
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            color = Color(0xFFAAE9E6),
+                            shape = RoundedCornerShape(size = 16.dp)
+                        )
+                        .padding(horizontal = 16.dp, vertical = 12.dp), // inner padding
+                ) {
+                    if (puerto.value.isEmpty()) {
+                        Text(
+                            text = placeholder,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.LightGray
+                        )
+                    }
+                    innerTextField()
+                }
+            }
+        )
+        BasicTextField(
+            value = pas.value,
+            onValueChange = { newText ->
+                pas.value = newText
+            },
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.DarkGray
+            ),
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 64.dp) // margin left and right
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            color = Color(0xFFAAE9E6),
+                            shape = RoundedCornerShape(size = 16.dp)
+                        )
+                        .padding(horizontal = 16.dp, vertical = 12.dp), // inner padding
+                ) {
+                    if (puerto.value.isEmpty()) {
+                        Text(
+                            text = placeholder,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.LightGray
+                        )
+                    }
+                    innerTextField()
+                }
+            }
+        )
+
             Button(
                 onClick = {
-                    var url ="tcp://${ser.value}:${puerto.value}"
-                    connectBroker(context, url)
+                    vals.brokerServer.value=ser.value
+                    vals.brokerPort.value=puerto.value
+                    vals.brokerTopic.value=top.value
+                    vals.brokerClient.value=cli.value
+                    vals.brokerPass.value=pas.value
+                    onBack()
+//                    var url ="tcp://${ser.value}:${puerto.value}"
+//                    connectBroker(context, url)
                 },
             ) {
-                Text(text = "Conectar")
+                Text(text = "Guardar")
             }
         }
 }
@@ -139,7 +244,7 @@ fun connectBroker(applicationContext : Context, url:String): Boolean {
         token.actionCallback = object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken)                        {
                 Log.i("Connection", "success ")
-                Toast.makeText(applicationContext,"CONECCION OK", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext,"BRK: Conectado", Toast.LENGTH_SHORT).show()
                 connect = true
                 //connectionStatus = true
                 // Give your callback on connection established here
@@ -147,7 +252,7 @@ fun connectBroker(applicationContext : Context, url:String): Boolean {
             override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
                 //connectionStatus = false
 
-                Toast.makeText(applicationContext,"CONECCION NO", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext,"BRK: Error", Toast.LENGTH_LONG).show()
                 Log.i("Connection", "failure")
                 // Give your callback on connection failure here
                 exception.printStackTrace()
@@ -160,12 +265,12 @@ fun connectBroker(applicationContext : Context, url:String): Boolean {
     return connect
 }
 
-private fun publishBroker(topic: String, msg: String, qos: Int, retained: Boolean) {
+ fun publishBroker(topic: String, msg: String, qos: Int, retained: Boolean) {
     try {
         val token = broker.publish(topic,msg.toByteArray(),qos,retained)
         token.actionCallback = object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken) {
-                //Toast.makeText(applicationContext,"Publish OK",Toast.LENGTH_SHORT).show()
+                Log.i("brkok", msg)
             }
             override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
                 //Toast.makeText(applicationContext,"Publish NO",Toast.LENGTH_SHORT).show()
@@ -179,9 +284,10 @@ private fun publishBroker(topic: String, msg: String, qos: Int, retained: Boolea
 }
 
 //FUNCION PARA DESCONECTAR EL BROKER, NO SE SI FUNCIONA
-private fun disconnectBroker() {
+ fun disconnectBroker(context: Context) {
     try {
         broker.disconnect()
+        Toast.makeText(context,"BRK: Desconectado".toString(),Toast.LENGTH_SHORT).show()
     } catch (e: MqttException) {
         //Toast.makeText(this,e.toString(),Toast.LENGTH_LONG).show()
         e.printStackTrace()

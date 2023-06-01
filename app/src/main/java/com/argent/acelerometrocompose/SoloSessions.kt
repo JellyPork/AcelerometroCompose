@@ -1,6 +1,7 @@
 package com.argent.acelerometrocompose
 
 import android.graphics.Paint.Align
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,7 +43,8 @@ import androidx.compose.ui.unit.toSize
 import com.argent.acelerometrocompose.ui.theme.Shapes
 
 @Composable
-fun SoloSessionScreen(onBack: () -> Unit, onConfigurar: () -> Unit){
+fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
+    val context= LocalContext.current
     val numPruebas = listOf<String>("1","2","3","4","5","6","7","8","9","10")
     var mSelectedIndex by remember { mutableStateOf(0) }
     var mExpanded by remember { mutableStateOf(false) }
@@ -51,7 +54,7 @@ fun SoloSessionScreen(onBack: () -> Unit, onConfigurar: () -> Unit){
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
         Text(text = vals.sesion.value)
@@ -80,6 +83,7 @@ fun SoloSessionScreen(onBack: () -> Unit, onConfigurar: () -> Unit){
                     numPruebas.forEach { label ->
                         DropdownMenuItem(text = { Text(text = label) }, onClick = {
                             mSelectedText = label
+                            vals.item.value=mSelectedText
                             mExpanded = false
                         })
                     }
@@ -89,7 +93,13 @@ fun SoloSessionScreen(onBack: () -> Unit, onConfigurar: () -> Unit){
         }
         Spacer(modifier = Modifier.height(20.dp))
 
-        Button(onClick = onConfigurar) {
+        Button(onClick = {
+            if(vals.item.value!="") {
+                onSensores()
+                connectBroker(context,"tcp://${vals.brokerServer.value}:${vals.brokerPort.value}")
+            }
+            else Toast.makeText(context,"Seleciona un elemento.", Toast.LENGTH_SHORT).show()
+        }) {
             Text(
                 text = "Confirmar",
                 fontSize = 30.sp,

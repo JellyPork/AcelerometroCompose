@@ -166,6 +166,12 @@ fun LargeDropdownMenuItem(
 
 class variables: ViewModel(){
     var sesion =  mutableStateOf("")
+    var item = mutableStateOf("")
+    var brokerServer = mutableStateOf("test.mosquitto.org")
+    var brokerPort = mutableStateOf("1883")
+    var brokerTopic = mutableStateOf("biogait")
+    var brokerClient= mutableStateOf("SMUclient")
+    var brokerPass= mutableStateOf("")
 }
 
 val vals = variables()
