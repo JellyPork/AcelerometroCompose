@@ -33,9 +33,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import android.os.Handler
-
-
-
+import android.util.Log
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileWriter
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import com.opencsv.CSVWriter
+import kotlinx.coroutines.GlobalScope
+import java.io.IOException
 
 
 @Composable
@@ -92,11 +101,11 @@ fun AcelScreen(onBack: () -> Unit) {
             if(estado.active){
                 sensorVM.stopSensors()
                 sensorVM.stopHandel()
+                sensorVM.generarDataset(context)
             }
             else {
                 sensorVM.starSensors()
                 sensorVM.startHadler()
-
             }
         }, colors = ButtonDefaults.buttonColors(containerColor = bcolor), modifier = Modifier
             .fillMaxWidth()
@@ -115,6 +124,13 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
     val estado: StateFlow<SensorValues> = _estado.asStateFlow()
     private  lateinit var  sensorManager: SensorManager
     var handler: Handler? = null
+    val accArr: ArrayList<FloatArray> =  ArrayList()
+    val angArr: ArrayList<FloatArray> =  ArrayList()
+    val gyrArr: ArrayList<FloatArray> =  ArrayList()
+    val magArr: ArrayList<FloatArray> =  ArrayList()
+    val ortArr: ArrayList<FloatArray> =  ArrayList()
+    val minArr: ArrayList<String> =  ArrayList()
+    var calendar = Calendar.getInstance()
 
 
     fun setupSensor(context: Context) {
@@ -185,27 +201,161 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
     }
 
     fun startHadler(){
+        angArr.clear()
+        accArr.clear()
+        gyrArr.clear()
+        ortArr.clear()
+        minArr.clear()
+        magArr.clear()
         handler = Handler()
-        handler!!.postDelayed(object : Runnable {
-            override fun run() {
-                //mandar angulos
-                publishBroker(vals.brokerTopic.value, "${String.format("%2.2f", _estado.value.angulosOrientacion[1])},${String.format("%2.2f", _estado.value.angulosOrientacion[2])},${String.format("%2.2f",_estado.value.angulosOrientacion[0])}",0, false) //llamamos nuestro metodo
-                //mandar acc
-                publishBroker("${vals.brokerTopic.value}/ACC", "${String.format("%2.2f", _estado.value.lecturaACC[0])},${String.format("%2.2f", _estado.value.lecturaACC[1])},${String.format("%2.2f",_estado.value.lecturaACC[2])}", 0, false) //llamamos nuestro metodo
-                //mandar gyr
-                publishBroker("${vals.brokerTopic.value}/GYR", "${String.format("%2.2f", _estado.value.lecturaGYR[0])},${String.format("%2.2f", _estado.value.lecturaGYR[1])},${String.format("%2.2f",_estado.value.lecturaGYR[2])}", 0, false) //llamamos nuestro metodo
-                //mandar mag
-                publishBroker("${vals.brokerTopic.value}/MAG", "${String.format("%2.2f", _estado.value.lecturaMGT[0])},${String.format("%2.2f",_estado.value.lecturaMGT[1])},${String.format("%2.2f", _estado.value.lecturaMGT[2])}", 0, false) //llamamos nuestro metodo
-                //mandar ort
-                publishBroker("${vals.brokerTopic.value}/ORT", "${String.format("%2.2f", _estado.value.lecturaORT[1])},${String.format("%2.2f", _estado.value.lecturaORT[2])},${String.format("%2.2f", _estado.value.lecturaORT[0])}", 0, false) //llamamos nuestro metodo
-                handler!!.postDelayed(this, 100) //se ejecutara cada 100 segundos
-            }
-        }, 100)
+        viewModelScope.launch(Dispatchers.IO) {
+            handler!!.postDelayed(object : Runnable {
+                override fun run() {
+                    calendar = Calendar.getInstance()
+                    //mandar angulos
+                    publishBroker(
+                        vals.brokerTopic.value,
+                        "${
+                            String.format(
+                                "%2.2f",
+                                _estado.value.angulosOrientacion[1]
+                            )
+                        },${
+                            String.format(
+                                "%2.2f",
+                                _estado.value.angulosOrientacion[2]
+                            )
+                        },${String.format("%2.2f", _estado.value.angulosOrientacion[0])}",
+                        0,
+                        false
+                    ) //llamamos nuestro metodo
+                    angArr.add(_estado.value.angulosOrientacion)
+                    //mandar acc
+                    publishBroker(
+                        "${vals.brokerTopic.value}/ACC",
+                        "${
+                            String.format(
+                                "%2.2f",
+                                _estado.value.lecturaACC[0]
+                            )
+                        },${
+                            String.format(
+                                "%2.2f",
+                                _estado.value.lecturaACC[1]
+                            )
+                        },${String.format("%2.2f", _estado.value.lecturaACC[2])}",
+                        0,
+                        false
+                    ) //llamamos nuestro metodo
+                    accArr.add(_estado.value.lecturaACC)
+                    //mandar gyr
+                    publishBroker(
+                        "${vals.brokerTopic.value}/GYR",
+                        "${
+                            String.format(
+                                "%2.2f",
+                                _estado.value.lecturaGYR[0]
+                            )
+                        },${
+                            String.format(
+                                "%2.2f",
+                                _estado.value.lecturaGYR[1]
+                            )
+                        },${String.format("%2.2f", _estado.value.lecturaGYR[2])}",
+                        0,
+                        false
+                    ) //llamamos nuestro metodo
+                    gyrArr.add(_estado.value.lecturaGYR)
+                    //mandar mag
+                    publishBroker(
+                        "${vals.brokerTopic.value}/MAG",
+                        "${
+                            String.format(
+                                "%2.2f",
+                                _estado.value.lecturaMGT[0]
+                            )
+                        },${
+                            String.format(
+                                "%2.2f",
+                                _estado.value.lecturaMGT[1]
+                            )
+                        },${String.format("%2.2f", _estado.value.lecturaMGT[2])}",
+                        0,
+                        false
+                    ) //llamamos nuestro metodo
+                    magArr.add(_estado.value.lecturaMGT)
+                    //mandar ort
+                    publishBroker(
+                        "${vals.brokerTopic.value}/ORT",
+                        "${
+                            String.format(
+                                "%2.2f",
+                                _estado.value.lecturaORT[1]
+                            )
+                        },${
+                            String.format(
+                                "%2.2f",
+                                _estado.value.lecturaORT[2]
+                            )
+                        },${String.format("%2.2f", _estado.value.lecturaORT[0])}",
+                        0,
+                        false
+                    ) //llamamos nuestro metodo
+                    ortArr.add(_estado.value.lecturaORT)
+                    minArr.add(
+                        String.format(
+                            "%02d:%02d:%02d:%02d",
+                            calendar.get(Calendar.HOUR),
+                            calendar.get(Calendar.MINUTE),
+                            calendar.get(Calendar.SECOND),
+                            calendar.get(Calendar.MILLISECOND)
+                        )
+                    )
+                    handler!!.postDelayed(this, 10) //se ejecutara cada 100 Msegundos
+                }
+            }, 10)
+        }
     }
     fun stopHandel(){
         handler?.removeCallbacksAndMessages(null)
         handler = null
     }
+
+    fun generarDataset(context: Context){
+        //Toast.makeText(context,"${accArr.size} ${gyrArr.size} ${angArr.size} ${magArr.size} ${minArr.size}  ${ortArr.size}",Toast.LENGTH_SHORT).show()
+        var fileWriter :FileWriter
+        var csvWriter: CSVWriter
+        viewModelScope.launch(Dispatchers.IO){
+            val fechaHora = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val archivo = File(context.getExternalFilesDir(null),"${vals.brokerTopic.value}_$fechaHora.csv")
+            Log.i("csvd",context.getExternalFilesDir(null).toString())
+//            GlobalScope.launch(Dispatchers.Main) {
+//                Toast.makeText(context, context.getExternalFilesDir(null).toString(), Toast.LENGTH_SHORT).show()
+//            }
+
+            try {
+                 fileWriter = FileWriter(archivo)
+                 csvWriter = CSVWriter(fileWriter,',',CSVWriter.NO_QUOTE_CHARACTER,CSVWriter.NO_ESCAPE_CHARACTER,CSVWriter.DEFAULT_LINE_END);
+                csvWriter.writeNext(arrayOf("timestamp","accX","accY","accZ","gyrX","gyrY","gyrZ","mgtX","mgtY","mgtZ","pitch","roll","yaw","test","item","score"))
+                for (i in 0 until accArr.size){
+                    csvWriter.writeNext(arrayOf(minArr[i],arrayStringCSV(accArr[i]),arrayStringCSV(gyrArr[i]),arrayStringCSV(magArr[i]),arrayStringCSV(angArr[i]),"${vals.sesion.value}",vals.item.value,_estado.value.score.toString()))
+                }
+                GlobalScope.launch(Dispatchers.Main) {
+                    Toast.makeText(context, "Dataset generado", Toast.LENGTH_SHORT).show()
+                }
+                csvWriter.close()
+            }catch (e: IOException){
+                e.printStackTrace()
+                //Log.i("csve", e.toString())
+                GlobalScope.launch(Dispatchers.Main) {
+                    Toast.makeText(context, "Error Generando Dataset ${e.toString()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    fun arrayStringCSV(arr:FloatArray): String = arr.joinToString(separator = ",")
+
 }
 
 data class SensorValues(
@@ -215,7 +365,8 @@ data class SensorValues(
     val lecturaORT: FloatArray = FloatArray(3),
     val matrizRotacion: FloatArray = FloatArray(9),
     val angulosOrientacion: FloatArray = FloatArray(3),
-    val active: Boolean=false
+    val active: Boolean=false,
+    val score: Int=0
 )
 
 

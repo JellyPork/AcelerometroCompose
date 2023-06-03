@@ -270,7 +270,7 @@ fun connectBroker(applicationContext : Context, url:String): Boolean {
         val token = broker.publish(topic,msg.toByteArray(),qos,retained)
         token.actionCallback = object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken) {
-                Log.i("brkok", msg)
+                //Log.i("brkok", msg)
             }
             override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
                 //Toast.makeText(applicationContext,"Publish NO",Toast.LENGTH_SHORT).show()
