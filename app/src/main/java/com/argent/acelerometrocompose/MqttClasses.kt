@@ -26,9 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import info.mqtt.android.service.MqttAndroidClient
-import org.eclipse.paho.client.mqttv3.IMqttActionListener
-import org.eclipse.paho.client.mqttv3.IMqttToken
-import org.eclipse.paho.client.mqttv3.MqttException
+import org.eclipse.paho.client.mqttv3.*
 
 private var iniciado: Boolean = false
 lateinit var broker: MqttAndroidClient
@@ -246,6 +244,7 @@ fun connectBroker(applicationContext : Context, url:String): Boolean {
                 Log.i("Connection", "success ")
                 Toast.makeText(applicationContext,"BRK: Conectado", Toast.LENGTH_SHORT).show()
                 connect = true
+                vals.brokerConected.value=true
                 //connectionStatus = true
                 // Give your callback on connection established here
             }
@@ -282,11 +281,55 @@ fun connectBroker(applicationContext : Context, url:String): Boolean {
         e.printStackTrace()
     }
 }
+fun suscribeBroker(context: Context,top: String,qos: Int=0){
+    if(!vals.brokerSuscriber.value) {
+        val token = broker.subscribe(top, qos)
+        token.actionCallback = object : IMqttActionListener {
+            override fun onSuccess(asyncActionToken: IMqttToken?) {
+                vals.brokerSuscriber.value=true
+                Toast.makeText(context, "[$top] Suscripción Exitosa", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                Toast.makeText(context, "Suscripción error", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+
+        broker.setCallback(object : MqttCallback {
+            override fun connectionLost(cause: Throwable?) {
+                // Pérdida de conexión con el broker
+                Toast.makeText(context, "BRKR: LOST", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun messageArrived(topic: String?, message: MqttMessage?) {
+                val receivedMessage = message?.toString()
+                if (receivedMessage != null) {
+                    //Toast.makeText(context, receivedMessage, Toast.LENGTH_SHORT).show()
+                    vals.mensajeBroker.value = receivedMessage
+                }
+            }
+
+            override fun deliveryComplete(token: IMqttDeliveryToken?) {
+                // Entrega completa del mensaje (opcional)
+            }
+        })
+    }
+}
 
 //FUNCION PARA DESCONECTAR EL BROKER, NO SE SI FUNCIONA
  fun disconnectBroker(context: Context) {
     try {
-        broker.disconnect()
+        broker.disconnect().actionCallback= object :IMqttActionListener{
+            override fun onSuccess(asyncActionToken: IMqttToken?) {
+                vals.brokerConected.value=false
+            }
+
+            override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                Toast.makeText(context, "BRKR: Error Desconexion",Toast.LENGTH_LONG).show()
+            }
+
+        }
         Toast.makeText(context,"BRK: Desconectado".toString(),Toast.LENGTH_SHORT).show()
     } catch (e: MqttException) {
         //Toast.makeText(this,e.toString(),Toast.LENGTH_LONG).show()

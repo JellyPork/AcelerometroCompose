@@ -94,7 +94,7 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(onClick = {
-            if(vals.item.value!="") {
+            if(vals.item.value!="default") {
                 onSensores()
                 connectBroker(context,"tcp://${vals.brokerServer.value}:${vals.brokerPort.value}")
             }

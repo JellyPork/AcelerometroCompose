@@ -2,25 +2,31 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:icon="@drawable/gyroscope"
+        android:label="@string/Titulo_App"
         android:supportsRtl="true"
         android:theme="@style/Theme.AcelerometroCompose"
         tools:targetApi="31">
 
-        <activity
-            android:name=".AcelActivity"
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.argent.acelerometrocompose.fileprovider"
             android:exported="false"
-            android:label="@string/title_activity_acel"
-            android:theme="@style/Theme.AcelerometroCompose" />
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <!-- ... -->
+        </provider>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:label="@string/Titulo_App"
             android:theme="@style/Theme.AcelerometroCompose">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

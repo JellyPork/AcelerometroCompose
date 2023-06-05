@@ -165,13 +165,25 @@ fun LargeDropdownMenuItem(
 }
 
 class variables: ViewModel(){
-    var sesion =  mutableStateOf("")
-    var item = mutableStateOf("")
+    var sesion =  mutableStateOf("default")
+    var item = mutableStateOf("default")
+    var usuario = mutableStateOf("Usuario")
+
+    var modo = mutableStateOf(false)    //false:solo   true:duo
+    var begin = mutableStateOf(false)
+    var started = mutableStateOf(false)
+
     var brokerServer = mutableStateOf("test.mosquitto.org")
     var brokerPort = mutableStateOf("1883")
     var brokerTopic = mutableStateOf("biogait")
     var brokerClient= mutableStateOf("SMUclient")
     var brokerPass= mutableStateOf("")
+    var brokerConected = mutableStateOf(false)
+    var mensajeBroker = mutableStateOf("default")
+    var canalBroker = mutableStateOf("0")
+    var brokerSuscriber= mutableStateOf(false)
+
+    val datasetDir="/storage/emulated/0/Download/Datasets"
 }
 
 val vals = variables()

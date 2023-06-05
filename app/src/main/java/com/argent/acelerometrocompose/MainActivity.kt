@@ -89,10 +89,27 @@ fun NavigationView() {
         }
         composable("acel"){
             AcelScreen(
+                onBack = { navController.popBackStack() },
+            )
+        }
+        composable("files"){
+            FilesScreen (
                 onBack = { navController.popBackStack() }
             )
         }
-
+        composable("duo") {
+            DuoScreen(
+                onBack = { navController.popBackStack() },
+                onControlMode = { /*navController.navigate("control")*/ },
+                onSensorMode = { navController.navigate("sensorWait") }
+            )
+        }
+        composable("sensorWait") {
+            SensorWaitScreen(
+                onBack = { navController.popBackStack() },
+                onBegin = { navController.navigate("acel") }
+            )
+        }
     }
 }
 
@@ -112,7 +129,7 @@ fun HomeScreen(navController: NavController) {
             )
         Spacer(modifier = Modifier.height(20.dp))
         Image(
-            painter = painterResource(R.drawable.logo_inicio),
+            painter = painterResource(R.drawable.gyroscope),
             contentDescription = null
         )
         Spacer(modifier = Modifier.height(50.dp))
@@ -125,7 +142,7 @@ fun HomeScreen(navController: NavController) {
             )
         }
         Spacer(modifier = Modifier.height(5.dp))
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = { navController.navigate("files")}) {
             Text(text = "Archivos",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold)

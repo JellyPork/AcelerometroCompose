@@ -27,14 +27,19 @@ fun ModoScreen(onHome: () -> Unit, onSolo: () -> Unit, onDuo: () -> Unit){
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(20.dp))
-        Button(onClick = onSolo ) {
+        Button(onClick = {
+            vals.modo.value=false
+            onSolo()
+        } ) {
             Text(text = "Solo",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
             )
         }
         Spacer(modifier = Modifier.height(5.dp))
-        Button(onClick = onDuo ) {
+        Button(onClick = {
+            vals.modo.value=true
+            onDuo()} ) {
             Text(text = "Duo",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
