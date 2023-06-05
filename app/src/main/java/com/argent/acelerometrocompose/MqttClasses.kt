@@ -46,74 +46,74 @@ fun ConfigurarMqttScreen(onBack: () -> Unit){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
-            BasicTextField(
-                value = ser.value,
-                onValueChange = { newText ->
-                    ser.value = newText
-                },
-                textStyle = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.DarkGray
-                ),
-                decorationBox = { innerTextField ->
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 64.dp) // margin left and right
-                            .fillMaxWidth()
-                            .border(
-                                width = 2.dp,
-                                color = Color(0xFFAAE9E6),
-                                shape = RoundedCornerShape(size = 16.dp)
-                            )
-                            .padding(horizontal = 16.dp, vertical = 12.dp), // inner padding
-                    ) {
-                        if (ser.value.isEmpty()) {
-                            Text(
-                                text = placeholder,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = Color.LightGray
-                            )
-                        }
-                        innerTextField()
+        BasicTextField(
+            value = ser.value,
+            onValueChange = { newText ->
+                ser.value = newText
+            },
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.DarkGray
+            ),
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 64.dp) // margin left and right
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            color = Color(0xFFAAE9E6),
+                            shape = RoundedCornerShape(size = 16.dp)
+                        )
+                        .padding(horizontal = 16.dp, vertical = 12.dp), // inner padding
+                ) {
+                    if (ser.value.isEmpty()) {
+                        Text(
+                            text = placeholder,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.LightGray
+                        )
                     }
+                    innerTextField()
                 }
-            )
-            BasicTextField(
-                value = puerto.value,
-                onValueChange = { newText ->
-                    puerto.value = newText
-                },
-                textStyle = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.DarkGray
-                ),
-                decorationBox = { innerTextField ->
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 64.dp) // margin left and right
-                            .fillMaxWidth()
-                            .border(
-                                width = 2.dp,
-                                color = Color(0xFFAAE9E6),
-                                shape = RoundedCornerShape(size = 16.dp)
-                            )
-                            .padding(horizontal = 16.dp, vertical = 12.dp), // inner padding
-                    ) {
-                        if (puerto.value.isEmpty()) {
-                            Text(
-                                text = placeholder,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Normal,
-                                color = Color.LightGray
-                            )
-                        }
-                        innerTextField()
+            }
+        )
+        BasicTextField(
+            value = puerto.value,
+            onValueChange = { newText ->
+                puerto.value = newText
+            },
+            textStyle = TextStyle(
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.DarkGray
+            ),
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 64.dp) // margin left and right
+                        .fillMaxWidth()
+                        .border(
+                            width = 2.dp,
+                            color = Color(0xFFAAE9E6),
+                            shape = RoundedCornerShape(size = 16.dp)
+                        )
+                        .padding(horizontal = 16.dp, vertical = 12.dp), // inner padding
+                ) {
+                    if (puerto.value.isEmpty()) {
+                        Text(
+                            text = placeholder,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.LightGray
+                        )
                     }
+                    innerTextField()
                 }
-            )
+            }
+        )
         BasicTextField(
             value = top.value,
             onValueChange = { newText ->
@@ -217,21 +217,21 @@ fun ConfigurarMqttScreen(onBack: () -> Unit){
             }
         )
 
-            Button(
-                onClick = {
-                    vals.brokerServer.value=ser.value
-                    vals.brokerPort.value=puerto.value
-                    vals.brokerTopic.value=top.value
-                    vals.brokerClient.value=cli.value
-                    vals.brokerPass.value=pas.value
-                    onBack()
+        Button(
+            onClick = {
+                vals.brokerServer.value=ser.value
+                vals.brokerPort.value=puerto.value
+                vals.brokerTopic.value=top.value
+                vals.brokerClient.value=cli.value
+                vals.brokerPass.value=pas.value
+                onBack()
 //                    var url ="tcp://${ser.value}:${puerto.value}"
 //                    connectBroker(context, url)
-                },
-            ) {
-                Text(text = "Guardar")
-            }
+            },
+        ) {
+            Text(text = "Guardar")
         }
+    }
 }
 
 fun connectBroker(applicationContext : Context, url:String): Boolean {
@@ -264,7 +264,7 @@ fun connectBroker(applicationContext : Context, url:String): Boolean {
     return connect
 }
 
- fun publishBroker(topic: String, msg: String, qos: Int, retained: Boolean) {
+fun publishBroker(topic: String, msg: String, qos: Int, retained: Boolean) {
     try {
         val token = broker.publish(topic,msg.toByteArray(),qos,retained)
         token.actionCallback = object : IMqttActionListener {
@@ -318,7 +318,7 @@ fun suscribeBroker(context: Context,top: String,qos: Int=0){
 }
 
 //FUNCION PARA DESCONECTAR EL BROKER, NO SE SI FUNCIONA
- fun disconnectBroker(context: Context) {
+fun disconnectBroker(context: Context) {
     try {
         broker.disconnect().actionCallback= object :IMqttActionListener{
             override fun onSuccess(asyncActionToken: IMqttToken?) {

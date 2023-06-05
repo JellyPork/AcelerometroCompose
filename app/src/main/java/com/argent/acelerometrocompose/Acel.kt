@@ -111,25 +111,25 @@ fun AcelScreen(onBack: () -> Unit) {
             }
 
         }else{  //Si esta en modo solo
-        Button(onClick = {
-            if(estado.active){
-                sensorVM.stopSensors()
-                sensorVM.stopHandler()
-                sensorVM.generarDataset(context)
+            Button(onClick = {
+                if(estado.active){
+                    sensorVM.stopSensors()
+                    sensorVM.stopHandler()
+                    sensorVM.generarDataset(context)
+                }
+                else {
+                    sensorVM.starSensors()
+                    sensorVM.startHandler(vals.brokerTopic.value)
+                }
+            }, colors = ButtonDefaults.buttonColors(containerColor = bcolor), modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(10.dp))
+            {
+                Text(text = bText,fontSize =30.sp, fontWeight = FontWeight.Bold)
             }
-            else {
-                sensorVM.starSensors()
-                sensorVM.startHandler(vals.brokerTopic.value)
-            }
-        }, colors = ButtonDefaults.buttonColors(containerColor = bcolor), modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(10.dp))
-        {
-            Text(text = bText,fontSize =30.sp, fontWeight = FontWeight.Bold)
-        }
 
-    }
+        }
     }
 }
 
@@ -193,7 +193,7 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
     override fun onSensorChanged(event: SensorEvent?) {
         when (event?.sensor?.type) {
             Sensor.TYPE_ACCELEROMETER -> {
-               _estado.update { x -> x.copy(lecturaACC = event.values) } }
+                _estado.update { x -> x.copy(lecturaACC = event.values) } }
             Sensor.TYPE_MAGNETIC_FIELD -> {
                 _estado.update { x -> x.copy(lecturaMGT = event.values) } }
             Sensor.TYPE_ORIENTATION -> {
@@ -224,7 +224,7 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
         minArr.clear()
         magArr.clear()
         handler = Handler()
-     viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             handler!!.postDelayed(object : Runnable {
                 override fun run() {
                     calendar = Calendar.getInstance()
@@ -252,7 +252,7 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
                     handler!!.postDelayed(this, 100) //se ejecutara cada 100 Msegundos
                 }
             }, 100)
-       }
+        }
     }
     fun stopHandler(){
         handler?.removeCallbacksAndMessages(null)
@@ -308,4 +308,3 @@ data class SensorValues(
     val active: Boolean=false,
     val score: Int=0
 )
-

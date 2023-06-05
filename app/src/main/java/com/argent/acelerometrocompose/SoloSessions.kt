@@ -1,6 +1,7 @@
 package com.argent.acelerometrocompose
 
 import android.graphics.Paint.Align
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,6 +47,23 @@ import com.argent.acelerometrocompose.ui.theme.Shapes
 fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
     val context= LocalContext.current
     val numPruebas = listOf<String>("1","2","3","4","5","6","7","8","9","10")
+    val items = remember {
+        ArrayList<String>()
+    }
+    var init by remember {
+        mutableStateOf(false)
+    }
+    if(!init){
+        init = true
+        vals.json.forEach { item ->
+            if(item.name.toString() == vals.sesion.value){
+                Log.d("Nombre", item.name.toString())
+                item.items?.forEach { nitem ->
+                    items.add(nitem.no.toString())
+                }
+            }
+        }
+    }
     var mSelectedIndex by remember { mutableStateOf(0) }
     var mExpanded by remember { mutableStateOf(false) }
     val density = LocalDensity.current
@@ -78,9 +96,10 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
                     expanded = mExpanded,
                     onDismissRequest = { mExpanded = false },
                     modifier = Modifier
+                        .height(400.dp)
                         .width(with(density) { mTextFieldSize.width.toDp() })
                 ) {
-                    numPruebas.forEach { label ->
+                    items.forEach { label ->
                         DropdownMenuItem(text = { Text(text = label) }, onClick = {
                             mSelectedText = label
                             vals.item.value=mSelectedText

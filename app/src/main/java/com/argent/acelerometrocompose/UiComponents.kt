@@ -184,6 +184,8 @@ class variables: ViewModel(){
     var brokerSuscriber= mutableStateOf(false)
 
     val datasetDir="/storage/emulated/0/Download/Datasets"
+
+    var json = ArrayList<Prueba>()
 }
 
 val vals = variables()

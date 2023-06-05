@@ -1,6 +1,7 @@
 package com.argent.acelerometrocompose
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +37,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.argent.acelerometrocompose.ui.theme.AcelerometroComposeTheme
+import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +61,21 @@ class MainActivity : ComponentActivity() {
 fun NavigationView() {
     val navController = rememberNavController()
     var sesion by remember{ mutableStateOf("") }
+    var ini  by remember {
+        mutableStateOf(false)
+    }
+    val firebase = remember {
+        FireBase()
+    }
+    if(!ini){
+        ini = true;
+        //firebase.enablePersistence()
+        vals.json.clear()
+        firebase.enablePersistence()
+        vals.json = firebase.getCollenction()
+    }
+
+
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             HomeScreen(navController)
@@ -110,6 +128,7 @@ fun NavigationView() {
                 onBegin = { navController.navigate("acel") }
             )
         }
+
     }
 }
 
@@ -126,7 +145,7 @@ fun HomeScreen(navController: NavController) {
         Text(text = stringResource(R.string.Titulo_App),
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold
-            )
+        )
         Spacer(modifier = Modifier.height(20.dp))
         Image(
             painter = painterResource(R.drawable.gyroscope),
@@ -134,7 +153,7 @@ fun HomeScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(50.dp))
         Button(onClick = {
-                navController.navigate("modo")
+            navController.navigate("modo")
         }) {
             Text(text = "Iniciar",
                 fontSize = 30.sp,
