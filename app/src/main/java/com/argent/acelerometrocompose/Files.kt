@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +51,10 @@ fun FilesScreen(onBack: () -> Unit){
                     intent.flags=Intent.FLAG_GRANT_READ_URI_PERMISSION
                     fileLaunch.launch(Intent.createChooser(intent,"Abrir Archivo") )
                 }) {
-                    Icon(imageVector = Icons.Rounded.List, contentDescription =fileName.toString() )
+                    androidx.compose.material.Icon(
+                        painterResource(id = R.drawable.file),
+                        contentDescription = null
+                    )
                     Text(text = fileName.name, fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 }
 

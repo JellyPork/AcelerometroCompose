@@ -265,6 +265,8 @@ fun connectBroker(applicationContext : Context, url:String): Boolean {
 }
 
 fun publishBroker(topic: String, msg: String, qos: Int, retained: Boolean) {
+    if(!broker.isConnected)
+        return
     try {
         val token = broker.publish(topic,msg.toByteArray(),qos,retained)
         token.actionCallback = object : IMqttActionListener {
@@ -281,7 +283,7 @@ fun publishBroker(topic: String, msg: String, qos: Int, retained: Boolean) {
         e.printStackTrace()
     }
 }
-fun suscribeBroker(context: Context,top: String,qos: Int=0){
+fun suscribeBroker(context: Context,top: String,qos: Int=0,onRecibir: (String)-> Unit){
     if(!vals.brokerSuscriber.value) {
         val token = broker.subscribe(top, qos)
         token.actionCallback = object : IMqttActionListener {
@@ -299,14 +301,16 @@ fun suscribeBroker(context: Context,top: String,qos: Int=0){
         broker.setCallback(object : MqttCallback {
             override fun connectionLost(cause: Throwable?) {
                 // Pérdida de conexión con el broker
+                vals.brokerSuscriber.value=false
                 Toast.makeText(context, "BRKR: LOST", Toast.LENGTH_SHORT).show()
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 val receivedMessage = message?.toString()
                 if (receivedMessage != null) {
+                    onRecibir(receivedMessage)
                     //Toast.makeText(context, receivedMessage, Toast.LENGTH_SHORT).show()
-                    vals.mensajeBroker.value = receivedMessage
+                    //vals.mensajeBroker.value = receivedMessage
                 }
             }
 
@@ -314,7 +318,15 @@ fun suscribeBroker(context: Context,top: String,qos: Int=0){
                 // Entrega completa del mensaje (opcional)
             }
         })
+    }else{
+        //Toast.makeText(context,"Ya estas Suscrito",1).show()
     }
+}
+
+
+fun unsuscribeBroker(top:String){
+        broker.unsubscribe(top)
+        vals.brokerSuscriber.value=false
 }
 
 //FUNCION PARA DESCONECTAR EL BROKER, NO SE SI FUNCIONA
@@ -322,6 +334,7 @@ fun disconnectBroker(context: Context) {
     try {
         broker.disconnect().actionCallback= object :IMqttActionListener{
             override fun onSuccess(asyncActionToken: IMqttToken?) {
+                Toast.makeText(context,"BRK: Desconectado",Toast.LENGTH_SHORT).show()
                 vals.brokerConected.value=false
             }
 
@@ -330,7 +343,7 @@ fun disconnectBroker(context: Context) {
             }
 
         }
-        Toast.makeText(context,"BRK: Desconectado".toString(),Toast.LENGTH_SHORT).show()
+
     } catch (e: MqttException) {
         //Toast.makeText(this,e.toString(),Toast.LENGTH_LONG).show()
         e.printStackTrace()

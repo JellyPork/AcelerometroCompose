@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
 import androidx.compose.material3.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Text
@@ -29,6 +30,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -112,15 +114,17 @@ fun SoloScreen(onBack: () -> Unit, onSoloSessions: () -> Unit) {
                 mSelectedIndex = index
                 mSelectedText = pruebas[mSelectedIndex]
                 vals.sesion.value = mSelectedText
+                vals.indexPrueba.value=index
             }
         )
         Spacer(modifier = Modifier.height(15.dp))
         Button(onClick = {
-            if(vals.sesion.value!="")
+            if(vals.sesion.value!="default")
                 onSoloSessions()
             else Toast.makeText(context,"Seleciona un elemento.", Toast.LENGTH_SHORT).show()
         })
         {
+            Icon(painterResource(id = R.drawable.okey),contentDescription = null)
             Text(text = "Seleccionar",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold)

@@ -1,11 +1,13 @@
 package com.argent.acelerometrocompose
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,6 +33,7 @@ fun ModoScreen(onHome: () -> Unit, onSolo: () -> Unit, onDuo: () -> Unit){
             vals.modo.value=false
             onSolo()
         } ) {
+            Icon(painterResource(id = R.drawable.solo),contentDescription = null)
             Text(text = "Solo",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
@@ -39,7 +42,9 @@ fun ModoScreen(onHome: () -> Unit, onSolo: () -> Unit, onDuo: () -> Unit){
         Spacer(modifier = Modifier.height(5.dp))
         Button(onClick = {
             vals.modo.value=true
-            onDuo()} ) {
+            onDuo()
+        } ) {
+            Icon(painterResource(id = R.drawable.duo),contentDescription = null)
             Text(text = "Duo",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold

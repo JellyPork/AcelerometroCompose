@@ -53,7 +53,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.storage.StorageReference
 
 @Composable
-fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
+fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: () -> Unit){
     val context= LocalContext.current
     val items = remember {
         ArrayList<String>()
@@ -93,7 +93,7 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
         if(vals.listBitMap.size > mSelectedText.toInt() - 1){
             Image(
                 modifier = Modifier.size(200.dp, 200.dp),
-                bitmap = vals.listBitMap[mSelectedText.toInt()-1].asImageBitmap(),
+                bitmap = vals.listBitMap[mSelectedIndex].asImageBitmap(),
                 contentDescription = null
             )
         }
@@ -125,7 +125,14 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
                     items.forEach { label ->
                         DropdownMenuItem(text = { Text(text = label) }, onClick = {
                             mSelectedText = label
+                            mSelectedIndex = mSelectedText.toInt() -1
                             vals.item.value=mSelectedText
+                            vals.indexItem.value=mSelectedIndex
+                            val score = vals.json[vals.indexPrueba.value].items?.get(mSelectedIndex)?.score
+                            when(score){
+                                0 -> vals.showScore.value=false
+                                else -> vals.showScore.value=true
+                            }
                             mExpanded = false
                         })
                     }
@@ -137,11 +144,20 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
 
         Button(onClick = {
             if(vals.item.value!="default") {
-                onSensores()
+                vals.currentBitmap=vals.listBitMap[vals.indexItem.value].asImageBitmap()
                 connectBroker(context,"tcp://${vals.brokerServer.value}:${vals.brokerPort.value}")
+                if(vals.modo.value) {
+                    onControles()
+                }
+                else
+                    onSensores()
             }
             else Toast.makeText(context,"Seleciona un elemento.", Toast.LENGTH_SHORT).show()
         }) {
+            androidx.compose.material.Icon(
+                painterResource(id = R.drawable.okey),
+                contentDescription = null
+            )
             Text(
                 text = "Confirmar",
                 fontSize = 30.sp,

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material3.Button
@@ -96,8 +97,8 @@ fun NavigationView() {
         composable("soloSessions"){
             SoloSessionScreen(
                 onBack = { navController.popBackStack() },
-                onSensores = { navController.navigate("acel") }
-                //onConfigurar = { navController.navigate("mqtt") }
+                onSensores = { navController.navigate("acel") },
+                onControles = { navController.navigate("control") }
             )
         }
         composable("mqtt"){
@@ -118,7 +119,7 @@ fun NavigationView() {
         composable("duo") {
             DuoScreen(
                 onBack = { navController.popBackStack() },
-                onControlMode = { /*navController.navigate("control")*/ },
+                onControlMode = { navController.navigate("solo") },
                 onSensorMode = { navController.navigate("sensorWait") }
             )
         }
@@ -126,6 +127,11 @@ fun NavigationView() {
             SensorWaitScreen(
                 onBack = { navController.popBackStack() },
                 onBegin = { navController.navigate("acel") }
+            )
+        }
+        composable("control") {
+            ControlScreen(
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -149,27 +155,31 @@ fun HomeScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(20.dp))
         Image(
             painter = painterResource(R.drawable.gyroscope),
-            contentDescription = null
+            contentDescription = null,
+            modifier=Modifier.height(200.dp)
         )
         Spacer(modifier = Modifier.height(50.dp))
         Button(onClick = {
             navController.navigate("modo")
         }) {
+            Icon(painterResource(id = R.drawable.playcircle),contentDescription = null)
             Text(text = "Iniciar",
-                fontSize = 30.sp,
+                fontSize = 40.sp,
                 fontWeight = FontWeight.Bold
             )
         }
         Spacer(modifier = Modifier.height(5.dp))
         Button(onClick = { navController.navigate("files")}) {
+            Icon(painterResource(id = R.drawable.folder),contentDescription = null)
             Text(text = "Archivos",
-                fontSize = 15.sp,
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold)
         }
         Spacer(modifier = Modifier.height(5.dp))
         Button(onClick = { navController.navigate("mqtt")}) {
+            Icon(painterResource(id = R.drawable.config),contentDescription = null)
             Text(text = "Ajustes",
-                fontSize = 15.sp,
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold)
         }
     }

@@ -5,16 +5,13 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.List
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +46,10 @@ fun DuoScreen(onBack: () -> Unit, onSensorMode: () -> Unit, onControlMode: () ->
         )
         Spacer(modifier = Modifier.height(20.dp))
         Button(onClick = onControlMode ) {
-            Icon(imageVector = Icons.Rounded.Person, contentDescription ="MODO CONTROL" )
+            androidx.compose.material.Icon(
+                painterResource(id = R.drawable.control),
+                contentDescription = null
+            )
             Text(text = "Modo Control",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
@@ -60,7 +60,10 @@ fun DuoScreen(onBack: () -> Unit, onSensorMode: () -> Unit, onControlMode: () ->
             connectBroker(context,urlBroker)
             onSensorMode()
         } ) {
-            Icon(imageVector = Icons.Rounded.Phone, contentDescription ="MODO SENSOR" )
+            androidx.compose.material.Icon(
+                painterResource(id = R.drawable.sensor),
+                contentDescription = null
+            )
             Text(text = "Modo Sensor",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold

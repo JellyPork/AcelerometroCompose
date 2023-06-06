@@ -13,10 +13,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,10 +52,16 @@ fun AcelScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val sensorVM: SensorViewModel = viewModel()
     val estado = sensorVM.estado.collectAsState().value
+    var boolScore by remember {
+        mutableStateOf(false)
+    }
 
     sensorVM.setupSensor(context)
     BackHandler {
-        if(!vals.modo.value)disconnectBroker(context) //Desconectar el broker si esta en modo olo
+        vals.indexItem.value=0;
+        vals.begin.value=false
+        vals.mensajeBroker.value="STOP"
+        if(!vals.modo.value) disconnectBroker(context) //Desconectar el broker si esta en modo olo
         sensorVM.stopSensors()
         sensorVM.stopHandler()
         onBack()
@@ -83,9 +92,13 @@ fun AcelScreen(onBack: () -> Unit) {
             fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(20.dp))
         Image(
-            painter = painterResource(R.drawable.gyroscope),
-            contentDescription = null, modifier = Modifier.heightIn(50.dp,250.dp)
+            bitmap = vals.currentBitmap,
+            contentDescription = null, modifier = Modifier.size(200.dp,200.dp),
+            contentScale = ContentScale.FillBounds
         )
+        if(boolScore){
+            ScorePopUp(onSelect = {sensorVM.setScore(it);sensorVM.generarDataset(context);boolScore=false})
+        }
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = "Acc:\t\t${String.format("%2.2f", estado.lecturaACC[0])},\t\t${String.format("%2.2f", estado.lecturaACC[1])},\t\t${String.format("%2.2f", estado.lecturaACC[2])}")
         Text(text = "Gyr:\t\t${String.format("%2.2f", estado.lecturaGYR[0])},\t\t${String.format("%2.2f", estado.lecturaGYR[1])},\t\t${String.format("%2.2f", estado.lecturaGYR[2])}")
@@ -107,7 +120,10 @@ fun AcelScreen(onBack: () -> Unit) {
                 vals.started.value=false
                 sensorVM.stopSensors()
                 sensorVM.stopHandler()
-                sensorVM.generarDataset(context)
+                if(!vals.showScore.value)
+                    sensorVM.generarDataset(context)
+                else
+                    boolScore=true
             }
 
         }else{  //Si esta en modo solo
@@ -115,7 +131,10 @@ fun AcelScreen(onBack: () -> Unit) {
                 if(estado.active){
                     sensorVM.stopSensors()
                     sensorVM.stopHandler()
-                    sensorVM.generarDataset(context)
+                    if(!vals.showScore.value)
+                        sensorVM.generarDataset(context)
+                    else
+                        boolScore=true
                 }
                 else {
                     sensorVM.starSensors()
@@ -126,6 +145,7 @@ fun AcelScreen(onBack: () -> Unit) {
                 .fillMaxHeight()
                 .padding(10.dp))
             {
+                Icon(painterResource(id = R.drawable.playcircle),contentDescription = null)
                 Text(text = bText,fontSize =30.sp, fontWeight = FontWeight.Bold)
             }
 
@@ -213,6 +233,10 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         //NADA
+    }
+
+    fun setScore(s:Int){
+        _estado.update { x -> x.copy(score = s) }
     }
 
     fun startHandler(base:String){
