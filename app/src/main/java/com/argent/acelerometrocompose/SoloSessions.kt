@@ -104,6 +104,7 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
                             mSelectedText = label
                             vals.item.value=mSelectedText
                             mExpanded = false
+                            //
                         })
                     }
                 }
