@@ -86,6 +86,8 @@ fun AcelScreen(onBack: () -> Unit) {
             painter = painterResource(R.drawable.gyroscope),
             contentDescription = null, modifier = Modifier.heightIn(50.dp,250.dp)
         )
+        ScorePopUp(context = context, onSelect = {sensorVM.setScore(it);sensorVM.generarDataset(context)} )
+
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = "Acc:\t\t${String.format("%2.2f", estado.lecturaACC[0])},\t\t${String.format("%2.2f", estado.lecturaACC[1])},\t\t${String.format("%2.2f", estado.lecturaACC[2])}")
         Text(text = "Gyr:\t\t${String.format("%2.2f", estado.lecturaGYR[0])},\t\t${String.format("%2.2f", estado.lecturaGYR[1])},\t\t${String.format("%2.2f", estado.lecturaGYR[2])}")
@@ -115,7 +117,10 @@ fun AcelScreen(onBack: () -> Unit) {
                 if(estado.active){
                     sensorVM.stopSensors()
                     sensorVM.stopHandler()
-                    sensorVM.generarDataset(context)
+                    if(vals.showScore.value){
+
+                    }else
+                        sensorVM.generarDataset(context)
                 }
                 else {
                     sensorVM.starSensors()
@@ -213,6 +218,10 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         //NADA
+    }
+
+    fun setScore(s:Int){
+        _estado.update { x  -> x.copy(score = s) }
     }
 
     fun startHandler(base:String){
