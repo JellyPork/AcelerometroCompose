@@ -1,20 +1,20 @@
 package com.argent.acelerometrocompose
 
-import android.util.JsonReader
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.firestore.ktx.persistentCacheSettings
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
-import org.json.JSONObject
-import java.io.InputStreamReader
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 
+val storageRef = Firebase.storage.reference
 class FireBase {
     private val db: FirebaseFirestore = Firebase.firestore
+
 
     fun enablePersistence(){
         val settings = firestoreSettings {

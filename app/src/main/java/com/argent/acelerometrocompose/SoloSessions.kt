@@ -46,7 +46,7 @@ import com.argent.acelerometrocompose.ui.theme.Shapes
 @Composable
 fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
     val context= LocalContext.current
-//    val numPruebas = listOf<String>("1","2","3","4","5","6","7","8","9","10")
+    val numPruebas = listOf<String>("1","2","3","4","5","6","7","8","9","10")
     val items = remember {
         ArrayList<String>()
     }
@@ -102,15 +102,7 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
                     items.forEach { label ->
                         DropdownMenuItem(text = { Text(text = label) }, onClick = {
                             mSelectedText = label
-                            val index = mSelectedText.toInt()-1
                             vals.item.value=mSelectedText
-                            vals.indexItem.value= index
-                            val score= vals.json[vals.indexPrueba.value].items?.get(vals.indexPrueba.value)?.score
-                            when(score){
-                                0 -> vals.showScore.value=false
-                                else -> vals.showScore.value=true
-                            }
-                            Toast.makeText(context,"SCORED: ${vals.showScore.value} ",Toast.LENGTH_SHORT).show()
                             mExpanded = false
                         })
                     }
