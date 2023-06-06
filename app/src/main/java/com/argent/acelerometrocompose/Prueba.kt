@@ -13,6 +13,7 @@ data class Prueba (
     val name: String? = null,
     val nItems: Int? = null,
     val items: List<Items>? = null
+//
 )
 
 data class Items(
