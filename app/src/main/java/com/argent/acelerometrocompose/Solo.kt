@@ -81,6 +81,9 @@ fun SoloScreen(onBack: () -> Unit, onSoloSessions: () -> Unit) {
                 mSelectedIndex = index
                 mSelectedText = pruebas[mSelectedIndex]
                 vals.sesion.value = mSelectedText
+                vals.indexPrueba.value=index
+                val prueba= vals.json[index].name
+                //Toast.makeText(context,"${vals.indexPrueba.value} $prueba",Toast.LENGTH_SHORT).show()
             }
         )
         Spacer(modifier = Modifier.height(15.dp))
