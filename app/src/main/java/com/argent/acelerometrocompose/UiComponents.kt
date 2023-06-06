@@ -1,5 +1,6 @@
 package com.argent.acelerometrocompose
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -30,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -186,6 +188,7 @@ class variables: ViewModel(){
     val datasetDir="/storage/emulated/0/Download/Datasets"
 
     var json = ArrayList<Prueba>()
+    var listBitMap = mutableStateListOf<Bitmap>()
 }
 
 val vals = variables()

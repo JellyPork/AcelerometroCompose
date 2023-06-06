@@ -1,8 +1,11 @@
 package com.argent.acelerometrocompose
 
+import android.graphics.Bitmap
 import android.graphics.Paint.Align
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -33,33 +37,44 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.argent.acelerometrocompose.ui.theme.Shapes
+import com.bumptech.glide.Glide
+import com.google.firebase.storage.StorageReference
 
 @Composable
 fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
     val context= LocalContext.current
-    val numPruebas = listOf<String>("1","2","3","4","5","6","7","8","9","10")
     val items = remember {
         ArrayList<String>()
+    }
+    val images = remember {
+        ArrayList<Bitmap>()
     }
     var init by remember {
         mutableStateOf(false)
     }
     if(!init){
         init = true
+        vals.listBitMap.clear()
         vals.json.forEach { item ->
             if(item.name.toString() == vals.sesion.value){
                 Log.d("Nombre", item.name.toString())
                 item.items?.forEach { nitem ->
                     items.add(nitem.no.toString())
+                    Log.i("Ruta", nitem.image)
+                    //images.add()
+                    nitem.createFile()
                 }
             }
         }
@@ -75,6 +90,14 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
+        if(vals.listBitMap.size > mSelectedText.toInt() - 1){
+            Image(
+                modifier = Modifier.size(200.dp, 200.dp),
+                bitmap = vals.listBitMap[mSelectedText.toInt()-1].asImageBitmap(),
+                contentDescription = null
+            )
+        }
+
         Text(text = vals.sesion.value)
         Spacer(modifier = Modifier.height(20.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
