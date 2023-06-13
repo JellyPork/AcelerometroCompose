@@ -5,20 +5,20 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.CountDownTimer
 import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -44,7 +44,6 @@ import java.io.FileWriter
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Composable
@@ -58,7 +57,7 @@ fun AcelScreen(onBack: () -> Unit) {
 
     sensorVM.setupSensor(context)
     BackHandler {
-        vals.indexItem.value=0;
+        vals.indexItem.value=0
         vals.begin.value=false
         vals.mensajeBroker.value="STOP"
         if(!vals.modo.value) disconnectBroker(context) //Desconectar el broker si esta en modo olo
@@ -137,6 +136,21 @@ fun AcelScreen(onBack: () -> Unit) {
                         boolScore=true
                 }
                 else {
+                    if(vals.timePrueba.value != 0L){
+                        object : CountDownTimer((vals.timePrueba.value *1000), 1000){
+                            override fun onTick(p0: Long) {
+                                //
+                            }
+                            override fun onFinish() {
+                                estado.active = false
+                                sensorVM.stopSensors()
+                                sensorVM.stopHandler()
+                                if(!vals.showScore.value)
+                                    sensorVM.generarDataset(context)
+                            }
+
+                        }.start()
+                    }
                     sensorVM.starSensors()
                     sensorVM.startHandler(vals.brokerTopic.value)
                 }
@@ -329,6 +343,6 @@ data class SensorValues(
     val lecturaORT: FloatArray = FloatArray(3),
     val matrizRotacion: FloatArray = FloatArray(9),
     val angulosOrientacion: FloatArray = FloatArray(3),
-    val active: Boolean=false,
+    var active: Boolean=false,
     val score: Int=0
 )

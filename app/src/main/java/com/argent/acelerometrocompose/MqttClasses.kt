@@ -20,25 +20,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import info.mqtt.android.service.MqttAndroidClient
-import org.eclipse.paho.client.mqttv3.*
+import org.eclipse.paho.client.mqttv3.IMqttActionListener
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
+import org.eclipse.paho.client.mqttv3.IMqttToken
+import org.eclipse.paho.client.mqttv3.MqttCallback
+import org.eclipse.paho.client.mqttv3.MqttException
+import org.eclipse.paho.client.mqttv3.MqttMessage
 
 private var iniciado: Boolean = false
 lateinit var broker: MqttAndroidClient
 
 @Composable
 fun ConfigurarMqttScreen(onBack: () -> Unit){
-    val context = LocalContext.current
-    var ser = remember {mutableStateOf(vals.brokerServer.value)}
-    var puerto = remember {mutableStateOf(vals.brokerPort.value)}
-    var top = remember {mutableStateOf(vals.brokerTopic.value)}
-    var cli = remember {mutableStateOf(vals.brokerClient.value)}
-    var pas = remember {mutableStateOf(vals.brokerPass.value)}
+    //val context = LocalContext.current
+    val ser = remember {mutableStateOf(vals.brokerServer.value)}
+    val puerto = remember {mutableStateOf(vals.brokerPort.value)}
+    val top = remember {mutableStateOf(vals.brokerTopic.value)}
+    val cli = remember {mutableStateOf(vals.brokerClient.value)}
+    val pas = remember {mutableStateOf(vals.brokerPass.value)}
     val placeholder = ""
     Column(
         modifier = Modifier
@@ -302,7 +306,7 @@ fun suscribeBroker(context: Context,top: String,qos: Int=0,onRecibir: (String)->
             override fun connectionLost(cause: Throwable?) {
                 // Pérdida de conexión con el broker
                 vals.brokerSuscriber.value=false
-                Toast.makeText(context, "BRKR: LOST", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "BRKR: LOST " , Toast.LENGTH_SHORT).show()
             }
 
             override fun messageArrived(topic: String?, message: MqttMessage?) {

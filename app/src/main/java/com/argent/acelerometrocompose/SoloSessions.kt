@@ -1,27 +1,21 @@
 package com.argent.acelerometrocompose
 
 import android.graphics.Bitmap
-import android.graphics.Paint.Align
 import android.util.Log
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -37,26 +31,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import com.argent.acelerometrocompose.ui.theme.Shapes
-import com.bumptech.glide.Glide
-import com.google.firebase.storage.StorageReference
 
 @Composable
 fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: () -> Unit){
     val context= LocalContext.current
     val items = remember {
         ArrayList<String>()
+    }
+    val times = remember{
+        ArrayList<Long>()
     }
     val images = remember {
         ArrayList<Bitmap>()
@@ -72,6 +64,7 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
                 Log.d("Nombre", item.name.toString())
                 item.items?.forEach { nitem ->
                     items.add(nitem.no.toString())
+                    times.add(nitem.timeLimit.toString().toLong())
                     Log.i("Ruta", nitem.image)
                     //images.add()
                     nitem.createFile()
@@ -128,6 +121,7 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
                             mSelectedIndex = mSelectedText.toInt() -1
                             vals.item.value=mSelectedText
                             vals.indexItem.value=mSelectedIndex
+                            vals.timePrueba.value = times[mSelectedIndex]
                             val score = vals.json[vals.indexPrueba.value].items?.get(mSelectedIndex)?.score
                             when(score){
                                 0 -> vals.showScore.value=false
