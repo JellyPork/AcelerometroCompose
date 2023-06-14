@@ -269,7 +269,7 @@ fun connectBroker(applicationContext : Context, url:String): Boolean {
 }
 
 fun publishBroker(topic: String, msg: String, qos: Int, retained: Boolean) {
-    if(broker != null) {
+    if(::broker.isInitialized) {
         if (!broker.isConnected)
             return
         try {
@@ -338,22 +338,24 @@ fun unsuscribeBroker(top:String){
 
 //FUNCION PARA DESCONECTAR EL BROKER, NO SE SI FUNCIONA
 fun disconnectBroker(context: Context) {
-    try {
-        broker.disconnect().actionCallback= object :IMqttActionListener{
-            override fun onSuccess(asyncActionToken: IMqttToken?) {
-                Toast.makeText(context,"BRK: Desconectado",Toast.LENGTH_SHORT).show()
-                vals.brokerConected.value=false
+    if(::broker.isInitialized) {
+        try {
+            broker.disconnect().actionCallback = object : IMqttActionListener {
+                override fun onSuccess(asyncActionToken: IMqttToken?) {
+                    Toast.makeText(context, "BRK: Desconectado", Toast.LENGTH_SHORT).show()
+                    vals.brokerConected.value = false
+                }
+
+                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
+                    Toast.makeText(context, "BRKR: Error Desconexion", Toast.LENGTH_LONG).show()
+                }
+
             }
 
-            override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                Toast.makeText(context, "BRKR: Error Desconexion",Toast.LENGTH_LONG).show()
-            }
-
+        } catch (e: MqttException) {
+            //Toast.makeText(this,e.toString(),Toast.LENGTH_LONG).show()
+            e.printStackTrace()
         }
-
-    } catch (e: MqttException) {
-        //Toast.makeText(this,e.toString(),Toast.LENGTH_LONG).show()
-        e.printStackTrace()
     }
 }
 

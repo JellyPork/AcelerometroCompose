@@ -283,7 +283,7 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
                     ortArr.add(ortstr)
                     minArr.add(curTM)
                     //MANDAR A BROKER
-                    publishBroker("$base/ANG", angstr, 0,false)
+                    publishBroker("$base/ANG", angstr, 0,false) //Arreglar porque no sirve cuando no tiene internet
                     publishBroker("$base/ACC", accstr,0,false)
                     publishBroker("$base/GYR",gyrstr,0, false)
                     publishBroker("$base/MAG",magstr , 0,false)
@@ -310,7 +310,7 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
         }
         viewModelScope.launch(Dispatchers.IO){
             val fechaHora = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val archivo = File(vals.datasetDir,"${vals.usuario.value}_$fechaHora.csv")
+            val archivo = File(vals.datasetDir,"${fechaHora}_${vals.usuario.value}_${vals.sesion.value}_Item${vals.item.value}.csv")
 
             try {
                 //ESCRIBIR DATASET
