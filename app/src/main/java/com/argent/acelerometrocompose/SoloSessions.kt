@@ -1,6 +1,10 @@
 package com.argent.acelerometrocompose
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -137,9 +141,15 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(onClick = {
+            val isConnected = isInternetAvailable(context)
             if(vals.item.value!="default") {
-                vals.currentBitmap=vals.listBitMap[vals.indexItem.value].asImageBitmap()
-                connectBroker(context,"tcp://${vals.brokerServer.value}:${vals.brokerPort.value}")
+                if(isConnected) {
+                    vals.currentBitmap = vals.listBitMap[vals.indexItem.value].asImageBitmap()
+                    connectBroker(
+                        context,
+                        "tcp://${vals.brokerServer.value}:${vals.brokerPort.value}"
+                    )
+                }
                 if(vals.modo.value) {
                     onControles()
                 }
@@ -159,4 +169,31 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
             )
         }
     }
+}
+
+private fun isInternetAvailable(context: Context): Boolean {
+    var result = false
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+        result = when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
+    } else {
+        connectivityManager.run {
+            connectivityManager.activeNetworkInfo?.run {
+                result = when (type) {
+                    ConnectivityManager.TYPE_WIFI -> true
+                    ConnectivityManager.TYPE_MOBILE -> true
+                    ConnectivityManager.TYPE_ETHERNET -> true
+                    else -> false
+                }
+            }
+        }
+    }
+    return result
 }
