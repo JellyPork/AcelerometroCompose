@@ -1,6 +1,7 @@
 package com.argent.acelerometrocompose
 
 import android.graphics.Bitmap
+import android.os.Environment
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -239,7 +240,7 @@ class variables: ViewModel(){
     var canalBroker = mutableStateOf("0")
     var brokerSuscriber= mutableStateOf(false)
 
-    val datasetDir="/storage/emulated/0/Download/Datasets"
+    val datasetDir=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/Datasets";
 
     var json = ArrayList<Prueba>()
     var listBitMap = mutableStateListOf<Bitmap>()

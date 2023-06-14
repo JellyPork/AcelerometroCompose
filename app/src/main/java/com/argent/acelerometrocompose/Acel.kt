@@ -291,12 +291,8 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
                     minArr.add(curTM)
                     //MANDAR A BROKER
                     if(vals.brokerConected.value) {
-                        publishBroker(
-                            "$base/ANG",
-                            angstr,
-                            0,
-                            false
-                        ) //Arreglar porque no sirve cuando no tiene internet
+                        publishBroker("$base/ANG", angstr, 0, false)
+                        //Arreglar porque no sirve cuando no tiene internet
                         publishBroker("$base/ACC", accstr, 0, false)
                         publishBroker("$base/GYR", gyrstr, 0, false)
                         publishBroker("$base/MAG", magstr, 0, false)
