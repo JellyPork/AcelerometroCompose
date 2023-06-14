@@ -89,6 +89,9 @@ fun AcelScreen(onBack: () -> Unit) {
         Text(text = "Item: ${vals.item.value}",
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold)
+        Text(text = "Tiempo: ${estado.tick/1000}/${vals.timePrueba.value} seg",
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(20.dp))
         if(vals.listBitMap.size != 0) {
             Image(
@@ -141,9 +144,10 @@ fun AcelScreen(onBack: () -> Unit) {
                     if(vals.timePrueba.value != 0L){
                         object : CountDownTimer((vals.timePrueba.value *1000), 1000){
                             override fun onTick(p0: Long) {
-                                //
+                                sensorVM.setTick(p0)
                             }
                             override fun onFinish() {
+                                sensorVM.setTick(0L)
                                 estado.active = false
                                 sensorVM.stopSensors()
                                 sensorVM.stopHandler()
@@ -254,6 +258,9 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
     fun setScore(s:Int){
         _estado.update { x -> x.copy(score = s) }
     }
+    fun setTick(t: Long){
+        _estado.update { x -> x.copy(tick = t) }
+    }
 
     fun startHandler(base:String){
         //LIMPIAR ARRAYS
@@ -296,9 +303,9 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
                         publishBroker("$base/ORT", ortstr, 0, false)
                     }
                     //DELAY HANDELR
-                    handler!!.postDelayed(this, 100) //se ejecutara cada 100 Msegundos
+                    handler!!.postDelayed(this, 1) //se ejecutara cada 100 Msegundos
                 }
-            }, 100)
+            }, 1)
         }
     }
     fun stopHandler(){
@@ -353,5 +360,6 @@ data class SensorValues(
     val matrizRotacion: FloatArray = FloatArray(9),
     val angulosOrientacion: FloatArray = FloatArray(3),
     var active: Boolean=false,
-    val score: Int=0
+    val score: Int=0,
+    val tick: Long = 0
 )
