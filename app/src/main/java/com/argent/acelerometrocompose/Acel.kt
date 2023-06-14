@@ -90,11 +90,13 @@ fun AcelScreen(onBack: () -> Unit) {
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(20.dp))
-        Image(
-            bitmap = vals.currentBitmap,
-            contentDescription = null, modifier = Modifier.size(200.dp,200.dp),
-            contentScale = ContentScale.FillBounds
-        )
+        if(vals.listBitMap.size != 0) {
+            Image(
+                bitmap = vals.currentBitmap,
+                contentDescription = null, modifier = Modifier.size(200.dp, 200.dp),
+                contentScale = ContentScale.FillBounds
+            )
+        }
         if(boolScore){
             ScorePopUp(onSelect = {sensorVM.setScore(it);sensorVM.generarDataset(context);boolScore=false})
         }
@@ -308,7 +310,7 @@ class SensorViewModel(): ViewModel(),SensorEventListener{
         }
         viewModelScope.launch(Dispatchers.IO){
             val fechaHora = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val archivo = File(vals.datasetDir,"${vals.brokerTopic.value}_$fechaHora.csv")
+            val archivo = File(vals.datasetDir,"${vals.usuario.value}_$fechaHora.csv")
 
             try {
                 //ESCRIBIR DATASET

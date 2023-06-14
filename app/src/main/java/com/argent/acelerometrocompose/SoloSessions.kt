@@ -144,7 +144,10 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
             val isConnected = isInternetAvailable(context)
             if(vals.item.value!="default") {
                 if(isConnected) {
-                    vals.currentBitmap = vals.listBitMap[vals.indexItem.value].asImageBitmap()
+                    if(vals.listBitMap.size != 0){
+                        vals.currentBitmap = vals.listBitMap[vals.indexItem.value].asImageBitmap()
+                    }
+
                     connectBroker(
                         context,
                         "tcp://${vals.brokerServer.value}:${vals.brokerPort.value}"

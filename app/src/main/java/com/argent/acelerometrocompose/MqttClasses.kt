@@ -269,22 +269,25 @@ fun connectBroker(applicationContext : Context, url:String): Boolean {
 }
 
 fun publishBroker(topic: String, msg: String, qos: Int, retained: Boolean) {
-    if(!broker.isConnected)
-        return
-    try {
-        val token = broker.publish(topic,msg.toByteArray(),qos,retained)
-        token.actionCallback = object : IMqttActionListener {
-            override fun onSuccess(asyncActionToken: IMqttToken) {
-                //Log.i("brkok", msg)
+    if(broker != null) {
+        if (!broker.isConnected)
+            return
+        try {
+            val token = broker.publish(topic, msg.toByteArray(), qos, retained)
+            token.actionCallback = object : IMqttActionListener {
+                override fun onSuccess(asyncActionToken: IMqttToken) {
+                    //Log.i("brkok", msg)
+                }
+
+                override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
+                    //Toast.makeText(applicationContext,"Publish NO",Toast.LENGTH_SHORT).show()
+                    exception.printStackTrace()
+                }
             }
-            override fun onFailure(asyncActionToken: IMqttToken, exception: Throwable) {
-                //Toast.makeText(applicationContext,"Publish NO",Toast.LENGTH_SHORT).show()
-                exception.printStackTrace()
-            }
+        } catch (e: MqttException) {
+            //Toast.makeText(LocalContext.current,e.toString(),Toast.LENGTH_LONG).show()
+            e.printStackTrace()
         }
-    } catch (e: MqttException) {
-        //Toast.makeText(LocalContext.current,e.toString(),Toast.LENGTH_LONG).show()
-        e.printStackTrace()
     }
 }
 fun suscribeBroker(context: Context,top: String,qos: Int=0,onRecibir: (String)-> Unit){
