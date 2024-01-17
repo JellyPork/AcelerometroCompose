@@ -58,10 +58,10 @@ fun SensorWaitScreen(onBack: () -> Unit,onBegin: () -> Unit){
                 if(!init) {
                     init = true
                     vals.json.forEach { item ->
-                        if (item.name.equals(configs[1].trim())) {
+                        if (item.nombre.equals(configs[1].trim())) {
                             item.items?.forEach { nitem ->
-                                if(nitem.no==configs[2].toInt()){
-                                    val imagen = storageRef.child(nitem.image)
+                                if(nitem.num==configs[2].toInt()){
+                                    val imagen = storageRef.child(nitem.imageUrl.toString())
                                     val localFile = File.createTempFile("temp", ".jpg")
                                     imagen.getFile(localFile).addOnSuccessListener {
                                         val bmp= BitmapFactory.decodeFile(localFile.absolutePath)

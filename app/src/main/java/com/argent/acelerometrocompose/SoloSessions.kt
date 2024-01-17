@@ -7,6 +7,7 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Button
@@ -44,6 +46,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.argent.acelerometrocompose.ui.theme.BlackCustom
+import com.argent.acelerometrocompose.ui.theme.WhiteCustom2
 
 @Composable
 fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: () -> Unit){
@@ -64,15 +68,18 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
         init = true
         vals.listBitMap.clear()
         vals.json.forEach { item ->
-            if(item.name.toString() == vals.sesion.value){
-                Log.d("Nombre", item.name.toString())
+            if(item.nombre.toString() == vals.sesion.value){
+                Log.d("Nombre", item.nombre.toString())
+                Log.d("Imagenes", item.items.toString())
                 item.items?.forEach { nitem ->
-                    items.add(nitem.no.toString())
-                    times.add(nitem.timeLimit.toString().toLong())
-                    Log.i("Ruta", nitem.image)
-                    //images.add()
+                    items.add(nitem.num.toString())
+                    times.add(nitem.tiempo.toString().toLong())
+                    nitem.imageUrl?.let { Log.i("Ruta", it.toString()) }
                     nitem.createFile()
                 }
+
+            //images.add()
+
             }
         }
     }
@@ -87,12 +94,28 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
+        if (vals.listBitMap.isNotEmpty()) {
+            val firstBitmap = vals.listBitMap[0]
+            Image(
+                modifier = Modifier.size(200.dp, 200.dp),
+                bitmap = firstBitmap.asImageBitmap(),
+                contentDescription = null
+            )
+        } else {
+            Text("No bitmaps loaded.")
+        }
         if(vals.listBitMap.size > mSelectedText.toInt() - 1){
             Image(
                 modifier = Modifier.size(200.dp, 200.dp),
                 bitmap = vals.listBitMap[mSelectedIndex].asImageBitmap(),
                 contentDescription = null
             )
+            val selectedBitmap = vals.listBitMap[mSelectedIndex]
+            Log.d("Image Loading", "List of bitmaps size: ${vals.listBitMap.size}")
+            Log.d("Image Loading", "Displaying Image: $selectedBitmap")
+            Log.d("Image Loading", "mSelectedText: $mSelectedText, mSelectedIndex: $mSelectedIndex")
+
+
         }
 
         Text(text = vals.sesion.value)
@@ -126,7 +149,7 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
                             vals.item.value=mSelectedText
                             vals.indexItem.value=mSelectedIndex
                             vals.timePrueba.value = times[mSelectedIndex]
-                            val score = vals.json[vals.indexPrueba.value].items?.get(mSelectedIndex)?.score
+                            val score = vals.json[vals.indexPrueba.value].items[mSelectedIndex]?.escala
                             when(score){
                                 0 -> vals.showScore.value=false
                                 else -> vals.showScore.value=true
@@ -160,10 +183,19 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
                     onSensores()
             }
             else Toast.makeText(context,"Seleciona un elemento.", Toast.LENGTH_SHORT).show()
-        }) {
+        },
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = WhiteCustom2,
+                contentColor = BlackCustom,
+            ),
+            border = BorderStroke(4.dp, BlackCustom)
+
+        ) {
             androidx.compose.material.Icon(
                 painterResource(id = R.drawable.okey),
-                contentDescription = null
+                contentDescription = null,
+                tint = BlackCustom
             )
             Text(
                 text = "Confirmar",

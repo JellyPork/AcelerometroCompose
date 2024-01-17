@@ -152,7 +152,9 @@ fun AcelScreen(onBack: () -> Unit) {
                                 sensorVM.stopSensors()
                                 sensorVM.stopHandler()
                                 if(!vals.showScore.value)
+                                    boolScore=true
                                     sensorVM.generarDataset(context)
+
                             }
 
                         }.start()

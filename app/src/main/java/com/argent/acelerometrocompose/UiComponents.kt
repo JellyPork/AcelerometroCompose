@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.Popup
 import androidx.lifecycle.ViewModel
+import com.argent.acelerometrocompose.ktor.dto.Instrument
 import com.argent.acelerometrocompose.ui.theme.AcelerometroComposeTheme
 
 
@@ -242,7 +243,7 @@ class variables: ViewModel(){
 
     val datasetDir=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/Datasets";
 
-    var json = ArrayList<Prueba>()
+    var json = ArrayList<Instrument>()
     var listBitMap = mutableStateListOf<Bitmap>()
     lateinit var currentBitmap: ImageBitmap
 }

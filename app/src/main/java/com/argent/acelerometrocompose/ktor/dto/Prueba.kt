@@ -1,12 +1,9 @@
-package com.argent.acelerometrocompose
+package com.argent.acelerometrocompose.ktor.dto
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
-import com.google.android.gms.tasks.Tasks.await
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
+import com.argent.acelerometrocompose.storageRef
+import com.argent.acelerometrocompose.vals
 import java.io.File
 
 data class Prueba (
@@ -16,7 +13,7 @@ data class Prueba (
 )
 
 data class Items(
-    val image: String = "default.jpg",
+    val image: String = "probando.jpg",
     val itemName: String? = null,
     val no: Int? = null,
     val score: Int? = null,
