@@ -46,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import coil.compose.AsyncImage
 import com.argent.acelerometrocompose.ui.theme.BlackCustom
 import com.argent.acelerometrocompose.ui.theme.WhiteCustom2
 
@@ -59,13 +60,14 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
         ArrayList<Long>()
     }
     val images = remember {
-        ArrayList<Bitmap>()
+        ArrayList<String>()
     }
     var init by remember {
         mutableStateOf(false)
     }
     if(!init){
         init = true
+
         vals.listBitMap.clear()
         vals.json.forEach { item ->
             if(item.nombre.toString() == vals.sesion.value){
@@ -75,10 +77,10 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
                     items.add(nitem.num.toString())
                     times.add(nitem.tiempo.toString().toLong())
                     nitem.imageUrl?.let { Log.i("Ruta", it.toString()) }
-                    nitem.createFile()
+                    nitem.imageUrl?.let { images.add(it) }
                 }
 
-            //images.add()
+
 
             }
         }
@@ -94,16 +96,38 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
-        if (vals.listBitMap.isNotEmpty()) {
-            val firstBitmap = vals.listBitMap[0]
-            Image(
-                modifier = Modifier.size(200.dp, 200.dp),
-                bitmap = firstBitmap.asImageBitmap(),
-                contentDescription = null
+        if (images.isNotEmpty()){
+            AsyncImage(
+                model = images[mSelectedIndex],
+                placeholder = painterResource(id = R.drawable.playcircle),
+                error = painterResource(id = R.drawable.okey),
+                contentDescription = "Testing logo",
             )
-        } else {
+        }else {
             Text("No bitmaps loaded.")
         }
+//        if (vals.listBitMap.isNotEmpty()) {
+//            val firstBitmap = vals.listBitMap[0]
+//            Image(
+//                modifier = Modifier.size(200.dp, 200.dp),
+//                bitmap = firstBitmap.asImageBitmap(),
+//                contentDescription = null
+//            )
+//            AsyncImage(
+//                model = images[0],
+//                placeholder = painterResource(id = R.drawable.gyroscope),
+//                error = painterResource(id = R.drawable.okey),
+//                contentDescription = "Testing logo",
+//            )
+//        } else {
+//            Text("No bitmaps loaded.")
+//            AsyncImage(
+//                model = images[0],
+//                placeholder = painterResource(id = R.drawable.gyroscope),
+//                error = painterResource(id = R.drawable.okey),
+//                contentDescription = "Testing logo",
+//            )
+//        }
         if(vals.listBitMap.size > mSelectedText.toInt() - 1){
             Image(
                 modifier = Modifier.size(200.dp, 200.dp),
@@ -146,6 +170,7 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
                         DropdownMenuItem(text = { Text(text = label) }, onClick = {
                             mSelectedText = label
                             mSelectedIndex = mSelectedText.toInt() -1
+
                             vals.item.value=mSelectedText
                             vals.indexItem.value=mSelectedIndex
                             vals.timePrueba.value = times[mSelectedIndex]
@@ -171,10 +196,10 @@ fun SoloSessionScreen(onBack: () -> Unit, onSensores: () -> Unit, onControles: (
                         vals.currentBitmap = vals.listBitMap[vals.indexItem.value].asImageBitmap()
                     }
 
-                    connectBroker(
-                        context,
-                        "tcp://${vals.brokerServer.value}:${vals.brokerPort.value}"
-                    )
+//                    connectBroker(
+//                        context,
+//                        "tcp://${vals.brokerServer.value}:${vals.brokerPort.value}"
+//                    )
                 }
                 if(vals.modo.value) {
                     onControles()

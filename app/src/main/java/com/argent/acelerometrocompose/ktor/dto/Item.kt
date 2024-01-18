@@ -27,28 +27,28 @@ data class Item(
     val registro: String? = null,
     val tiempo: Int? = null,
     val escala: Int? = null,
-    val imageUrl: ImageUrl? = null,
+    val imageUrl: String? = null,
     val _id: String
 ) {
-    fun createFile() {
-        imageUrl?.let {
-            try {
-                // Use imageUrl.imageUrl.data directly as it's now a List<Int>
-                val bitmap = decodeByteArrayImage(it.data.data)
-                Log.d("Decoded image", bitmap.toString())
-
-                if (bitmap != null) {
-                    Log.d("Decoded image", bitmap.toString())
-                    // Your other processing logic here
-                    vals.listBitMap.add(bitmap)
-                } else {
-                    Log.e("Decoding error", "Bitmap is null")
-                }
-            } catch (e: Exception) {
-                Log.e("Decoding error", "Error decoding image: ${e.message}")
-            }
-        }
-    }
+//    fun createFile() {
+//        imageUrl?.let {
+//            try {
+//                // Use imageUrl.imageUrl.data directly as it's now a List<Int>
+//                val bitmap = decodeByteArrayImage(it.data.data)
+//                Log.d("Decoded image", bitmap.toString())
+//
+//                if (bitmap != null) {
+//                    Log.d("Decoded image", bitmap.toString())
+//                    // Your other processing logic here
+//                    vals.listBitMap.add(bitmap)
+//                } else {
+//                    Log.e("Decoding error", "Bitmap is null")
+//                }
+//            } catch (e: Exception) {
+//                Log.e("Decoding error", "Error decoding image: ${e.message}")
+//            }
+//        }
+//    }
 
 
     private fun decodeByteArrayImage(data: List<Int>): Bitmap? {

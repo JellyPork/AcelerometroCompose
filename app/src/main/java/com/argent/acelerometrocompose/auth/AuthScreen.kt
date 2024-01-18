@@ -1,7 +1,9 @@
 package com.argent.acelerometrocompose.auth
 
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,7 +47,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(navController: NavHostController, storeData: StoreData) {
+fun LoginScreen(navController: NavHostController, storeData: StoreData, context: Context) {
     var showLogin by remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
     var email by remember { mutableStateOf(TextFieldValue()) }
@@ -111,8 +113,12 @@ fun LoginScreen(navController: NavHostController, storeData: StoreData) {
 
 
 
+                            Toast.makeText(context,"Login Exitoso", Toast.LENGTH_SHORT).show()
+
 
                             navController.navigate("home")
+                        }else{
+                            Toast.makeText(context,"Login Fallido", Toast.LENGTH_SHORT).show()
                         }
                         Log.d("Debug from login user", data.toString())
 
@@ -156,11 +162,15 @@ fun LoginScreen(navController: NavHostController, storeData: StoreData) {
                                 storeData.saveUserId(data.data.id)
                                 storeData.saveUserName(data.data.name)
                                 storeData.saveUserEmail(data.data.email)
+                                Toast.makeText(context,"Registro Exitoso", Toast.LENGTH_SHORT).show()
 
                                 Log.d("StoreData information", storeData.getUserName.first())
                                 Log.d("StoreData information", storeData.getUserId.first())
                                 Log.d("StoreData information", storeData.getUserEmail.first())
                                 navController.navigate("home")
+                            }else{
+                                Toast.makeText(context,"Registro Fallido", Toast.LENGTH_SHORT).show()
+
                             }
 
                             Log.d("Debug from registration user", data.toString())

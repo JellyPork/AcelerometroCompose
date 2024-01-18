@@ -106,7 +106,7 @@ fun NavigationView() {
 
     NavHost(navController = navController, startDestination = "auth") {
         composable("auth"){
-            LoginScreen(navController = navController, storeData = storeData)
+            LoginScreen(navController = navController, storeData = storeData, context = context)
         }
         composable("home") {
             HomeScreen(navController)
